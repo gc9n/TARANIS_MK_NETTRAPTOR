@@ -71,7 +71,9 @@ void FrSkySPort_Process(void) {
                    FrSkySPort_SendPackage(FR_ID_HEADING,ap_heading * 100);   // 10000 = 100 deg
                    break;    
                  case 7:        // Sends the analog value from input A0 on Teensy 3.1
-                    FrSkySPort_SendPackage(FR_ID_ADC2,adc2);                  
+                    //FrSkySPort_SendPackage(FR_ID_ADC2,adc2);
+                    FrSkySPort_SendPackage(FR_ID_ADC2,ap_voltage_battery);                  
+                    
                     break;       
                  case 8:        // First 2 cells
                        temp=((ap_voltage_battery/(ap_cell_count * 2)) & 0xFFF);
@@ -101,7 +103,7 @@ void FrSkySPort_Process(void) {
                    FrSkySPort_SendPackage(FR_ID_ACCZ,ap_accZ_old - ap_accZ ); 
                    break; 
                 case 14:        // Sends voltage as a VFAS value
-                   FrSkySPort_SendPackage(FR_ID_VFAS,ap_voltage_battery/10); 
+                   FrSkySPort_SendPackage(FR_ID_VFAS,ap_voltage_battery * 10);
                    break;   
                 case 15:
                    FrSkySPort_SendPackage(FR_ID_T1,gps_status); 

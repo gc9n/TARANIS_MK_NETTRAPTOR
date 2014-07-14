@@ -222,7 +222,8 @@ void loop() {
           ap_heading=NaviData.CompassHeading;
           ap_climb_rate=NaviData.Variometer;
           ap_custom_mode=NaviData.UsedCapacity;
-          ap_throttle=NaviData.Gas;
+         // ap_throttle=NaviData.Gas;
+          ap_throttle=NaviData.SatsInUse;
           ap_gps_altitude=NaviData.Altimeter;
           ap_base_mode=NaviData.Errorcode;
       

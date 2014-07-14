@@ -41,7 +41,7 @@ void FrSkySPort_Process(void) {
                     }
                    break;
                  case 1:
-                   FrSkySPort_SendPackage(FR_ID_RPM,ap_sat_visible * 2);   //  * 2 if number of blades on Taranis is set to 2
+                   FrSkySPort_SendPackage(FR_ID_RPM,ap_throttle * 2);   //  * 2 if number of blades on Taranis is set to 2
                    break;
                 case 2:
                    FrSkySPort_SendPackage(FR_ID_CURRENT,ap_current_battery / 10); 

@@ -216,7 +216,7 @@ void loop() {
           ap_voltage_battery=NaviData.UBat;
           ap_bar_altitude=(NaviData.Altimeter );
           ap_groundspeed=(NaviData.GroundSpeed);
-          ap_current_battery=NaviData.Current;
+          ap_current_battery=NaviData.Current*10;
           
           ap_sat_visible=NaviData.SatsInUse;
           ap_heading=NaviData.CompassHeading;

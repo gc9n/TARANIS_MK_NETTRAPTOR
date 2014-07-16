@@ -216,13 +216,14 @@ void loop() {
           ap_voltage_battery=NaviData.UBat;
           ap_bar_altitude=(NaviData.Altimeter );
           ap_groundspeed=(NaviData.GroundSpeed);
-          ap_current_battery=NaviData.Current;
+          ap_current_battery=NaviData.Current*10;
           
           ap_sat_visible=NaviData.SatsInUse;
           ap_heading=NaviData.CompassHeading;
           ap_climb_rate=NaviData.Variometer;
           ap_custom_mode=NaviData.UsedCapacity;
-          ap_throttle=NaviData.Gas;
+         // ap_throttle=NaviData.Gas;
+          ap_throttle=NaviData.SatsInUse;
           ap_gps_altitude=NaviData.Altimeter;
           ap_base_mode=NaviData.Errorcode;
       

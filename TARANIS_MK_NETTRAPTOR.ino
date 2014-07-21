@@ -68,7 +68,7 @@ int32_t   adc2 = 0;               // 100 = 1.0V
 int32_t     vfas = 0;                // 100 = 1,0V
 int32_t     gps_status = 0;     // (ap_sat_visible * 10) + ap_fixtype
                                              // ex. 83 = 8 sattelites visible, 3D lock 
-uint8_t   ap_cell_count = 0;
+uint8_t   ap_cell_count = 4;
 
 // ******************************************
 uint8_t     MavLink_Connected;
@@ -175,6 +175,7 @@ void loop() {
         // we decode the data
         decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
         s_MK_NaviData NaviData;
+       
         memcpy((unsigned char *)&NaviData, (unsigned char *)&rawDataDecoded, sizeof(NaviData));
 
         // cool we are done , we have osdData Struct an we can construct ANY gui we want .
@@ -183,10 +184,10 @@ void loop() {
         //A: 190 V: +100
         // diviser par 22.5
 
-        //char line1[20];
-        //char line2[20];
+         //char line1[20];
+        // char line2[20];
 
-        if(NaviData.Errorcode > 0){
+//        if(NaviData.Errorcode > 0){
 //          // error detected
 //          char errorCode[40];
 //          resolveError((int)  NaviData.Errorcode, errorCode);
@@ -194,15 +195,15 @@ void loop() {
 //          Serial.println("_->  ERROR  <-_");
 //          Serial.println(errorCode);
 //          beepMe(ERROR_BEEP,2);
-        }
+//        }
 
-        if(NaviData.UBat < MINIMUM_VOLTAGE_BEFORE_ALERT*10){
+//        if(NaviData.UBat < MINIMUM_VOLTAGE_BEFORE_ALERT*10){
           // error detected
 //          Serial.println("-> LOW BATT <-");
 //          sprintf(line2,"     %2i.%1iv     ",(int)(NaviData.UBat/10), (int) (NaviData.UBat%10));
 //          Serial.println(line2);
 //          beepMe(ERROR_BEEP,2);
-        }
+//        }
 
   
          //-----------------PUSHING DATA FROM MK TO TARANIS------------------....
@@ -217,7 +218,6 @@ void loop() {
           ap_bar_altitude=(NaviData.Altimeter );
           ap_groundspeed=(NaviData.GroundSpeed);
           ap_current_battery=NaviData.Current;
-          
           ap_sat_visible=NaviData.SatsInUse;
           ap_heading=NaviData.CompassHeading;
           ap_climb_rate=NaviData.Variometer;
@@ -229,8 +229,15 @@ void loop() {
           if (NaviData.SatsInUse>=5)
           {ap_fixtype=3;
           }
- 
- //////////////////////
+          
+           
+////  Serial.print("Distance"); Serial.println(Distance.Distance);
+//// Serial.print("TargetPositionDeviation"); Serial.println(GPS_PosDev_t.TargetPositionDeviation);
+// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,BIN);
+// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,DEC);
+// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,OCT);
+// Serial.print("NCFlags"); Serial.println(NaviData.NCFlags);
+// //////////////////////
 //           sprintf(line1,"B: %2i.%1iv Sat: %i",(int)(NaviData.UBat/10), (int) (NaviData.UBat%10) ,NaviData.SatsInUse);
 //           sprintf(line2,"A: %im  V: %i",(int)(NaviData.Altimeter / MK_ALTI_FACTOR),NaviData.Variometer);
 //          
@@ -320,41 +327,41 @@ void loop() {
         sprintf(cmdName,"D2");
 
       }
-      else if (dataType == 'V'){ // we have VERSION data we need to display version and set version check and maybe check the version compatibility
-
-
-        decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
-        str_VersionInfo VersionInfo;
-        memcpy((unsigned char *)&VersionInfo, (unsigned char *)&rawDataDecoded, sizeof(VersionInfo));
-        char line1[20];
-        char line2[20];
-
-        sprintf(line1,"Version ");
-        sprintf(line2,"Nc: %u.%u",VersionInfo.SWMajor,VersionInfo.SWMinor);
-       // lcdClearLine(1);
-        //Serial.println(line1);
-        //Serial.println(line2);
-
-       // delay(2000);
-        cmdSend = 0; // tel him to resend dataRequest
-        checkVersionStatus = 1; 
-        sprintf(cmdName,"D2");
-
-      } 
-      else if (dataType == 'L'){ 
-        decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
-        s_MK_LcdScreen LcdScreen;        
-        memcpy((unsigned char *)&LcdScreen, (unsigned char *)&rawDataDecoded, sizeof(LcdScreen));
-        menuIndex = LcdScreen.Menuitem;        
-        if(menuIndex == 2){
-          extractGpsInfo(LcdScreen.DisplayText,gpsInfo);
-          Serial.print("gpsInfo=");
-          Serial.println(gpsInfo);
-          
-          sprintf(cmdName,"OSD");
-        }
-        
-      }
+//      else if (dataType == 'V'){ // we have VERSION data we need to display version and set version check and maybe check the version compatibility
+//
+//
+//        decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
+//        str_VersionInfo VersionInfo;
+//        memcpy((unsigned char *)&VersionInfo, (unsigned char *)&rawDataDecoded, sizeof(VersionInfo));
+//        char line1[20];
+//        char line2[20];
+//
+//        sprintf(line1,"Version ");
+//        sprintf(line2,"Nc: %u.%u",VersionInfo.SWMajor,VersionInfo.SWMinor);
+//       // lcdClearLine(1);
+//        //Serial.println(line1);
+//        //Serial.println(line2);
+//
+//       // delay(2000);
+//        cmdSend = 0; // tel him to resend dataRequest
+//        checkVersionStatus = 1; 
+//        sprintf(cmdName,"D2");
+//
+//      } 
+//      else if (dataType == 'L'){ 
+//        decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
+//        s_MK_LcdScreen LcdScreen;        
+//        memcpy((unsigned char *)&LcdScreen, (unsigned char *)&rawDataDecoded, sizeof(LcdScreen));
+//        menuIndex = LcdScreen.Menuitem;        
+//        //if(menuIndex == 2){
+//          extractGpsInfo(LcdScreen.DisplayText,gpsInfo);
+//          Serial.print("gpsInfo=");
+//          Serial.println(gpsInfo);
+//          
+//          sprintf(cmdName,"OSD");
+//       // }
+//        
+//      }
     }
 
   }

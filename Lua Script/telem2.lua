@@ -7,13 +7,12 @@ local sats = 0
 local speed = 0
 local mkerror
 local timer
-<<<<<<< HEAD
-=======
+
 local text = "Mikrokopter"
 local temp = 0
 local errorcode
 
->>>>>>> origin/master
+
 --etc
 
 local function init()
@@ -26,7 +25,7 @@ local function background()
 end
 
 local function run(event)
-<<<<<<< HEAD
+
 background()
 
 print(event)  
@@ -52,7 +51,7 @@ lcd.drawText( 108,41, "Dir: home",0)
 --all stuff written here is only done when screen is on and seemed to be the best place for writing on screen ie
 
 lcd.drawText (60, 56, "Mikrokopter", 0)
-=======
+
 	background()
 
 	print(event)  
@@ -241,7 +240,7 @@ lcd.drawText (60, 56, "Mikrokopter", 0)
 	
 	end 
 	
->>>>>>> origin/master
+
 end
 
 return { init=init, background=background, run=run }

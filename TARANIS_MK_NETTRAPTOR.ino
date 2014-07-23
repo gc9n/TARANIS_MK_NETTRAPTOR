@@ -220,9 +220,7 @@ void loop() {
   	  currpos.Latitude = NaviData.CurrentPosition.Latitude;
   	  currpos.Longitude = NaviData.CurrentPosition.Longitude;
           ap_gps_altitude=NaviData.CurrentPosition.Altitude;
-          
-          //NaviData.CurrentPosition.Status  GPS STATUS 0 or 1 
- 
+          gps_status=NaviData.CurrentPosition.Status; //  GPS STATUS 0 or 1 
           //ap_gps_altitude=NaviData.Altimeter;
           ap_longitude=currpos.Longitude;
           ap_latitude=currpos.Latitude ;

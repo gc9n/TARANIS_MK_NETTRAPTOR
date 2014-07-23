@@ -35,7 +35,7 @@ uint16_t  ap_voltage_battery = 0;    // 1000 = 1V
 int16_t    ap_current_battery = 0;    //  10 = 1A
 
 // Message #24  GPS_RAW_INT 
-uint8_t    ap_fixtype = 3;                  //   0= No GPS, 1 = No Fix, 2 = 2D Fix, 3 = 3D Fix
+uint8_t    ap_fixtype = 0;                  //   0= No GPS, 1 = No Fix, 2 = 2D Fix, 3 = 3D Fix
 uint8_t    ap_sat_visible = 0;           // numbers of visible satelites
 // FrSky Taranis uses the first recieved lat/long as homeposition. 
 int32_t    ap_latitude = 0;              // 585522540;
@@ -237,7 +237,7 @@ void loop() {
           ap_throttle=NaviData.SatsInUse;
           ap_base_mode=NaviData.Errorcode;
       
-          if (NaviData.SatsInUse>=4)
+          if (NaviData.SatsInUse>=6)
           {ap_fixtype=3;}
           
            

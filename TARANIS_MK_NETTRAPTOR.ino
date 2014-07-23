@@ -175,9 +175,13 @@ void loop() {
         // we decode the data
         decode64(commandLine,rawDataDecoded,strlen(commandLine)); //? add decode status..? 
         s_MK_NaviData NaviData;
-       
+        GPS_Pos_t currpos;
+        
         memcpy((unsigned char *)&NaviData, (unsigned char *)&rawDataDecoded, sizeof(NaviData));
 
+        
+
+ 
         // cool we are done , we have osdData Struct an we can construct ANY gui we want .
         //1234567890123456 
         //B: 16.17 Sat: 5
@@ -213,28 +217,30 @@ void loop() {
           //ap_bar_altitude=(NaviData.Altimeter / MK_ALTI_FACTOR);
           //ap_groundspeed=(NaviData.GroundSpeed/100);
           //ap_current_battery=NaviData.Current/10;
-
+  	  currpos.Latitude = NaviData.CurrentPosition.Latitude;
+  	  currpos.Longitude = NaviData.CurrentPosition.Longitude;
+          ap_gps_altitude=NaviData.CurrentPosition.Altitude;
+          
+          //NaviData.CurrentPosition.Status  GPS STATUS 0 or 1 
+ 
+          //ap_gps_altitude=NaviData.Altimeter;
+          ap_longitude=currpos.Longitude;
+          ap_latitude=currpos.Latitude ;
           ap_voltage_battery=NaviData.UBat;
           ap_bar_altitude=(NaviData.Altimeter );
           ap_groundspeed=(NaviData.GroundSpeed);
-<<<<<<< HEAD
           ap_current_battery=NaviData.Current;
-=======
           ap_current_battery=NaviData.Current*10;
-          
->>>>>>> origin/master
           ap_sat_visible=NaviData.SatsInUse;
           ap_heading=NaviData.CompassHeading;
           ap_climb_rate=NaviData.Variometer;
           ap_custom_mode=NaviData.UsedCapacity;
          // ap_throttle=NaviData.Gas;
           ap_throttle=NaviData.SatsInUse;
-          ap_gps_altitude=NaviData.Altimeter;
           ap_base_mode=NaviData.Errorcode;
       
-          if (NaviData.SatsInUse>=5)
-          {ap_fixtype=3;
-          }
+          if (NaviData.SatsInUse>=4)
+          {ap_fixtype=3;}
           
            
 ////  Serial.print("Distance"); Serial.println(Distance.Distance);

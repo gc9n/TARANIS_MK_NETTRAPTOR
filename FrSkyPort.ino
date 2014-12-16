@@ -94,13 +94,15 @@ void FrSkySPort_Process(void) {
                           }
                       break;     
                  case 11:
-                   FrSkySPort_SendPackage(FR_ID_ACCX,ap_accX_old - ap_accX);    
+                   //FrSkySPort_SendPackage(FR_ID_ACCX,ap_accX_old - ap_accX); 
+                   FrSkySPort_SendPackage(FR_ID_ACCX,ap_accX); //nicodh 29/9/2014
+                   
                      break;
                 case 12:
-                   FrSkySPort_SendPackage(FR_ID_ACCY,ap_accY_old - ap_accY); 
+                   FrSkySPort_SendPackage(FR_ID_ACCY,ap_accY); //nicodh 29/9/2014
                    break; 
                 case 13:
-                   FrSkySPort_SendPackage(FR_ID_ACCZ,ap_accZ_old - ap_accZ ); 
+                   FrSkySPort_SendPackage(FR_ID_ACCZ,ap_accZ ); //nicodh 29/9/2014
                    break; 
                 case 14:        // Sends voltage as a VFAS value
                    FrSkySPort_SendPackage(FR_ID_VFAS,ap_voltage_battery * 10);
@@ -135,8 +137,8 @@ void FrSkySPort_Process(void) {
 // ***********************************************************************
 void FrSkySPort_SendByte(uint8_t byte) {
 	
-       _FrSkySPort_Serial.write(byte);
-	
+      // _FrSkySPort_Serial.write(byte);
+	FrSkySPort_TransmitByte( byte );
         // CRC update
 	crc += byte;         //0-1FF
 	crc += crc >> 8;   //0-100
@@ -145,13 +147,24 @@ void FrSkySPort_SendByte(uint8_t byte) {
 	crc &= 0x00ff;
 }
 
+// ***********************************************************************
+void FrSkySPort_TransmitByte(uint8_t b) {
+ if ( b == 0x7e ) {
+ _FrSkySPort_Serial.write( 0x7d );
+ _FrSkySPort_Serial.write( 0x5e );
+ } else if ( b == 0x7d ) {
+ _FrSkySPort_Serial.write( 0x7d );
+ _FrSkySPort_Serial.write( 0x5d );
+ } else {
+ _FrSkySPort_Serial.write( b );
+ } 
+}
 
 // ***********************************************************************
 void FrSkySPort_SendCrc() {
-	_FrSkySPort_Serial.write(0xFF-crc);
-        crc = 0;          // CRC reset
+ FrSkySPort_TransmitByte( 0xFF-crc );
+ crc = 0; // CRC reset
 }
-
 
 // ***********************************************************************
 void FrSkySPort_SendPackage(uint16_t id, uint32_t value) {

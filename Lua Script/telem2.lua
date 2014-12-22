@@ -7,51 +7,70 @@ local sats = 0
 local speed = 0
 local mkerror
 local timer
-
 local text = "Mikrokopter"
 local temp = 0
 local errorcode
+local headtmp
+local timz
+local lat = {0,0,0,0,0,0,0,0,0,0}
+local lon = {0,0,0,0,0,0,0,0,0,0}
+local heading = {0,0,0,0,0,0,0,0,0,0}
+local NCFlags = 0
+local NCFlagsArray = {0,0,0,0,0,0,0,0}
+local FCFlags = 0
+local FCFlagsArray = {0,0,0,0,0,0,0,0}
+local FCFlags2 = 0
+local FCFlags2Array = {0,0,0,0,0,0,0,0}
 
 
---etc
+function tobits(num,quien)
+ 	local retString=""
+	local i = 8
+	local tab ={0,0,0,0,0,0,0,0}
+	while i >= 0 do
+		if math.floor(num /(2^i)) >= 1 then
+			retString = retString .."1"
+			tab[i]=1
+			num = num-math.pow(2,i)
+		else 
+			retString = retString .. "0"
+			tab[i]=0
+		end
+		i = i-1
+	end 
+	if quien == "NCFlags" then 
+		NCFlagsArray = tab
+	end 
+	
+	if quien == "FCFlags" then 
+		FCFlagsArray = tab
+	end 
+	
+	if quien == "FCFlags2" then 
+		FCFlags2Array = tab
+	end 
+	
+end
 
 local function init()
 --set up initial stuff here not really always needed. this will be run once at model load.
+	headtmp=0
+	headtoh=0
+	headfromh=0
+	z1 = 0
+	z2 = 0
+	pilotlat = getValue("pilot-latitude")
+	pilotlon = getValue("pilot-longitude")
 end
 local function background()
 --tim1 = model.getTimer(1)
 --stuff here is done all time 
 	timer = model.getTimer(0)
 end
+--	num = math.floor(getValue(220)*100)
+
 
 local function run(event)
-
-background()
-
-print(event)  
---lines
-lcd.drawLine(0,31,211,31, SOLID, 0)	
-lcd.drawLine(0,53,211,53, SOLID, 0)	
-lcd.drawLine(106,0,106,53, SOLID, 0)
-
--- bat
-lcd.drawText(15, 3, getValue(216) .. " V", MIDSIZE)   -- Voltage
-lcd.drawTimer(65, 20, timer.value, 0)            --timer
-lcd.drawText(15,20, getValue(208) .. " mAh",0)   --current mAh
-
-lcd.drawText(15,33, getValue(207) .. " sats", 0)   --sats in use
-lcd.drawText(15,41, getValue(211) .. " km/h", 0)  --gps speed
-
-lcd.drawText( 108,3, "Alt:" .. getValue("altitude") .. " m gAlt:" .. getValue(213) .. "m",0)  --altitude and gps altitude
-lcd.drawText( 108,12, "Dir: " .. getValue(223),0)  --heading
-lcd.drawText( 108,20, "I: " .. getValue(217),0) --current
-
-lcd.drawText( 108,33, "Home: " .. getValue(212) .. " m" ,0) --gps distance
-lcd.drawText( 108,41, "Dir: home",0)
---all stuff written here is only done when screen is on and seemed to be the best place for writing on screen ie
-
-lcd.drawText (60, 56, "Mikrokopter", 0)
-
 	background()
 
 	print(event)  
@@ -62,18 +81,92 @@ lcd.drawText (60, 56, "Mikrokopter", 0)
 
 	-- bat
 	lcd.drawText(15, 3, getValue(216) .. " V", MIDSIZE)   -- Voltage
+	
+	
+--------- NCFlags -------------------------------------
+--  36 #define NC_FLAG_FREE                            0x01
+-- 37 #define NC_FLAG_PH                              0x02
+--  38 #define NC_FLAG_CH                              0x04
+--  39 #define NC_FLAG_RANGE_LIMIT                     0x08
+--  40 #define NC_FLAG_NOSERIALLINK                    0x10
+--  41 #define NC_FLAG_TARGET_REACHED                  0x20
+--  42 #define NC_FLAG_MANUAL                          0x40
+--  43 #define NC_FLAG_GPS_OK                          0x80
+--  44 
+--  45 // ------- FCStatusFlags -------------------------------
+--  46 #define FC_STATUS_MOTOR_RUN                     0x01
+--  47 #define FC_STATUS_FLY                           0x02
+--  48 #define FC_STATUS_CALIBRATE                     0x04
+--  49 #define FC_STATUS_START                         0x08
+--  50 #define FC_STATUS_EMERGENCY_LANDING             0x10
+--  51 #define FC_STATUS_LOWBAT                        0x20
+--  52 #define FC_STATUS_VARIO_TRIM_UP                 0x40
+--  53 #define FC_STATUS_VARIO_TRIM_DOWN               0x80
+--  54 
+--  55 // ------- FCStatusFlags2 ------------------------------
+--  56 #define FC_STATUS2_CAREFREE_ACTIVE              0x01
+--  57 #define FC_STATUS2_ALTITUDE_CONTROL_ACTIVE      0x02
+--  58 #define FC_STATUS2_FAILSAFE_ACTIVE              0x04
+--  59 #define FC_STATUS2_OUT1                         0x08
+--  60 #define FC_STATUS2_OUT2                         0x10
+--  61 #define FC_STATUS2_RES1                         0x20
+--  62 #define FC_STATUS2_RES2                         0x40
+--  63 #define FC_STATUS2_RES3                         0x80
+	
+	--lcd.drawText(60,3, tobits(getValue(222)),0) --NCflags
+	
+	NCFlags = getValue(220) * 100
+	tobits(NCFlags,"NCFlags")
+	--FCFlags = getValue(221) * 100
+	FCFlags = 3
+	tobits(FCFlags,"FCFlags")
+	FCFlags2 = getValue(222) * 100
+	tobits(FCFlags2,"FCFlags2")
+	
+	--lcd.drawText(60,3, NCFlags ,0) --NCflags
+	lcd.drawText(75,3, FCFlagsArray[1] ,0) --NCflags
+	if FCFlagsArray[1] == 1 then 
+		model.setGlobalVariable(1, 0, 100)
+	end
+	--lcd.drawText(90,3, FCFlags2 ,0) --NCflags
+	
 	lcd.drawTimer(65, 20, timer.value, 0)            --timer
 	lcd.drawText(15,20, getValue(208) .. " mAh",0)   --current mAh
 
 	lcd.drawText(15,33, getValue(207) .. " sats", 0)   --sats in use
 	lcd.drawText(15,41, getValue(211) .. " km/h", 0)  --gps speed
 
-	lcd.drawText( 108,3, "Alt:" .. getValue("altitude") .. " m gAlt:" .. getValue(213) .. "m",0)  --altitude and gps altitude
+	lcd.drawText( 108,3, "Alt:" .. math.floor(getValue("altitude")*10) .. " m gAlt:" .. getValue(213) .. "m",0)  --altitude and gps altitude
 	lcd.drawText( 108,12, "Dir: " .. getValue(223),0)  --heading
 	lcd.drawText( 108,20, "I: " .. getValue(217),0) --current
 
 	lcd.drawText( 108,33, "Home: " .. getValue(212) .. " m" ,0) --gps distance
-	lcd.drawText( 108,41, "Dir: home",0)
+	
+	--Then we calculate the heading from the pilot position to the current position.
+	pilotlat = getValue("pilot-latitude")
+	pilotlon = getValue("pilot-longitude")
+	lat = getValue("latitude")
+	lon = getValue("longitude")
+	
+	if pilotlat~=0 and lat~=0 and pilotlon~=0 and lon~=0 then 
+
+		z1 = math.sin(math.rad(lon) - math.rad(pilotlon)) * math.cos(math.rad(lat))
+		z2 = math.cos(math.rad(pilotlat)) * math.sin(math.rad(lat)) - math.sin(math.rad(pilotlat)) * math.cos(math.rad(lat)) * math.cos(math.rad(lon) - math.rad(pilotlon))
+		headfromh = math.deg(math.atan2(z1, z2))
+		if headfromh < 0 then
+			headfromh=headfromh+360
+		end
+		--Subtract 180 and get the heading to get back home.
+		headtoh = headfromh-180
+		if headtoh < 0 then
+			headtoh = headtoh+360
+		end
+	else
+		headfromh = 0
+		headtoh = 0
+	end
+	lcd.drawText( 108,41, "DirToHome: " .. math.floor(headtoh),0)
+	
 	--all stuff written here is only done when screen is on and seemed to be the best place for writing on screen i
 
 	--1 "FC not compatible "
@@ -229,18 +322,12 @@ lcd.drawText (60, 56, "Mikrokopter", 0)
 		text = "compass sensor"
 	end 
 
-	if getValue(210) == 0 then
-		text = "Mikrokopter"
-	end 
-	
 	if getValue(210) == 0 then 
-		lcd.drawText (105 -  50 / 2, 56, text, 0)
+		lcd.drawText (105 -  50 / 2, 56, "Mikrokopter", 0)
 	else 
 		lcd.drawText (20, 56, text, 0)
-	
-	end 
-	
-
+		playFile("/SOUNDS/en/system/timerlt3.wav")
+	end
 end
 
 return { init=init, background=background, run=run }

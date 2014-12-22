@@ -145,7 +145,7 @@ void loop() {
     }
 
     makeCmdString(cmdName,cmdStringRequest);
-    Serial.println(cmdStringRequest);
+    //Serial.println(cmdStringRequest);
     Serial2.println(cmdStringRequest);
   }
 
@@ -227,7 +227,7 @@ void loop() {
           ap_voltage_battery=NaviData.UBat;
           ap_bar_altitude=(NaviData.Altimeter );
           ap_groundspeed=(NaviData.GroundSpeed);
-          ap_current_battery=NaviData.Current;
+          //ap_current_battery=NaviData.Current;
           ap_current_battery=NaviData.Current*10;
           ap_sat_visible=NaviData.SatsInUse;
           ap_heading=NaviData.CompassHeading;
@@ -236,17 +236,20 @@ void loop() {
          // ap_throttle=NaviData.Gas;
           ap_throttle=NaviData.SatsInUse;
           ap_base_mode=NaviData.Errorcode;
-      
+          ap_accX = NaviData.NCFlags; //nicodh 29/09/2014
+          ap_accY = NaviData.FCFlags; //nicodh 29/09/2014
+          ap_accZ = NaviData.FCStatusFlags2; //nicodh 29/09/2014
+                    
           if (NaviData.SatsInUse>=6)
           {ap_fixtype=3;}
           
            
 ////  Serial.print("Distance"); Serial.println(Distance.Distance);
 //// Serial.print("TargetPositionDeviation"); Serial.println(GPS_PosDev_t.TargetPositionDeviation);
-// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,BIN);
-// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,DEC);
-// Serial.print("FCFlags"); Serial.println(NaviData.FCFlags,OCT);
-// Serial.print("NCFlags"); Serial.println(NaviData.NCFlags);
+  // Serial.print("FCFlags "); Serial.println(NaviData.FCFlags);
+  // Serial.print("FCStatusFlags2 "); Serial.println(NaviData.FCStatusFlags2);
+   Serial.print("FCFlags"); Serial.println(NaviData.FCFlags);
+ //  Serial.print("NCFlags "); Serial.println(NaviData.NCFlags);
 // //////////////////////
 //           sprintf(line1,"B: %2i.%1iv Sat: %i",(int)(NaviData.UBat/10), (int) (NaviData.UBat%10) ,NaviData.SatsInUse);
 //           sprintf(line2,"A: %im  V: %i",(int)(NaviData.Altimeter / MK_ALTI_FACTOR),NaviData.Variometer);
